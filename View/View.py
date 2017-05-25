@@ -1,7 +1,8 @@
-import pygame
+import pygame as pg
 
 import Model.Model as model
 from EventManager import *
+from MainConst import *
 from View.ViewConst import *
 
 class GraphicalView(object):
@@ -31,28 +32,36 @@ class GraphicalView(object):
         if isinstance(event, Event_Quit):
             # shut down the pygame graphics
             self.isinitialized = False
-            pygame.quit()
+            pg.quit()
         if isinstance(event, Event_EveryTick) and self.isinitialized:
             cur_state = self.model.state.peek()
             if cur_state == model.STATE_MENU:
                 self.render_menu()
             if cur_state == model.STATE_PLAY:
                 self.render_play()
-            if cur_state == model.STATE_HELP:
-                self.render_help()
+            if cur_state == model.STATE_STOP:
+                self.render_stop()
+
+            self.display_fps()
             # limit the redraw speed to 30 frames per second
-            self.clock.tick(30)
+            self.clock.tick(FramePerSec)
     
     def render_menu(self):
         """
         Render the game menu.
         """
-        self.screen.fill(Color_White)
+        # draw backgound
+        self.screen.fill(Color_Black)
+        # write some word
         somewords = self.smallfont.render(
                     'You are in the Menu. Space to play. Esc exits.', 
                     True, (0, 255, 0))
-        self.screen.blit(somewords, (0, 0))
-        pygame.display.flip()
+        (SurfaceX, SurfaceY) = somewords.get_size()
+        pos_x = (ScreenSize[0] - SurfaceX)/2
+        pos_y = (ScreenSize[1] - SurfaceY)/2
+        self.screen.blit(somewords, (pos_x, pos_y))
+        # update surface
+        pg.display.flip()
         
     def render_play(self):
         """
@@ -60,50 +69,47 @@ class GraphicalView(object):
         """
         # draw backgound
         self.screen.fill(Color_White)
-        pygame.draw.line(self.screen, Color_Blue , (768,0), (768,768), 2)
-        pygame.draw.line(self.screen, Color_Black, (256,0), (256,768), 2)
-        pygame.draw.line(self.screen, Color_Black, (512,0), (512,768), 2)
-        pygame.draw.line(self.screen, Color_Black, (0,256), (768,256), 2)
-        pygame.draw.line(self.screen, Color_Black, (0,512), (768,512), 2)
-
-        # draw choose
-        for i in range(2):
-            player = self.model.player[i]
-            for Choose in player.ChooseList:
-                if i == 0:
-                    pygame.draw.circle(
-                        self.screen, Color_Red,
-                        (128+Choose[0]*256, 128+Choose[1]*256),
-                        100
-                    )
-                else:
-                    pygame.draw.circle(
-                        self.screen, Color_Green,
-                        (128+Choose[0]*256, 128+Choose[1]*256),
-                        100
-                    )
-
-        pygame.display.flip()
-        
-    def render_help(self):
-        """
-        Render the help screen.
-        """
-        self.screen.fill(Color_White)
+        # write some word
         somewords = self.smallfont.render(
-                    'Help is here. space, escape or return.', 
+                    'Play game!', 
                     True, (0, 255, 0))
-        self.screen.blit(somewords, (0, 0))
-        pygame.display.flip()
+        (SurfaceX, SurfaceY) = somewords.get_size()
+        pos_x = (ScreenSize[0] - SurfaceX)/2
+        pos_y = (ScreenSize[1] - SurfaceY)/2
+        self.screen.blit(somewords, (pos_x, pos_y))
+        # update surface
+        pg.display.flip()
+        
+    def render_stop(self):
+        """
+        Render the stop screen.
+        """
+        # draw backgound
+        self.screen.fill(Color_Black)
+        # write some word
+        somewords = self.smallfont.render(
+                    'stop the game. space, escape to return the game.', 
+                    True, (0, 255, 0))
+        (SurfaceX, SurfaceY) = somewords.get_size()
+        pos_x = (ScreenSize[0] - SurfaceX)/2
+        pos_y = (ScreenSize[1] - SurfaceY)/2
+        self.screen.blit(somewords, (pos_x, pos_y))
+        # update surface
+        pg.display.flip()
+
+    def display_fps(self):
+        """Show the programs FPS in the window handle."""
+        caption = "{} - FPS: {:.2f}".format(GameCaption, self.clock.get_fps())
+        pg.display.set_caption(caption)
         
     def initialize(self):
         """
         Set up the pygame graphical display and loads graphical resources.
         """
-        result = pygame.init()
-        pygame.font.init()
-        pygame.display.set_caption(GameCaption)
-        self.screen = pygame.display.set_mode(ScreenSize)
-        self.clock = pygame.time.Clock()
-        self.smallfont = pygame.font.Font(None, 40)
+        result = pg.init()
+        pg.font.init()
+        pg.display.set_caption(GameCaption)
+        self.screen = pg.display.set_mode(ScreenSize)
+        self.clock = pg.time.Clock()
+        self.smallfont = pg.font.Font(None, 40)
         self.isinitialized = True

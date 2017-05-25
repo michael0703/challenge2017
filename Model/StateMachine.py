@@ -1,6 +1,6 @@
 # State machine constants for the StateMachine class below
 STATE_MENU = 1
-STATE_HELP = 2
+STATE_STOP = 2
 STATE_PLAY = 3
 
 class StateMachine(object):

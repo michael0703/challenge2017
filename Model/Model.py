@@ -1,8 +1,10 @@
-import pygame
+import time
+import random
 
 from EventManager import *
 from Model.GameObject import *
 from Model.StateMachine import *
+from MainConst import *
 
 class GameEngine(object):
     """
@@ -28,15 +30,17 @@ class GameEngine(object):
         self.player = []
         self.TurnTo = 0
 
+        random.seed(time.time())
+
     def notify(self, event):
         """
         Called by an event in the message queue. 
         """
         if isinstance(event, Event_Initialize):
-            self.SetAI()
-        if isinstance(event, Event_Quit):
+            self.SetPlayer()
+        elif isinstance(event, Event_Quit):
             self.running = False
-        if isinstance(event, Event_StateChange):
+        elif isinstance(event, Event_StateChange):
             # pop request
             if not event.state:
                 # false if no more states are left
@@ -45,13 +49,9 @@ class GameEngine(object):
             else:
                 # push a new state on the stack
                 self.state.push(event.state)
-        if isinstance(event, Event_Input):
-            pass
 
-    def SetAI(self):
-        for i in range(2):
-            if self.AIList[i]:
-                self.player.append( player( self.AIList[i] ) )
+    def SetPlayer(self):
+        pass
 
     def run(self):
         """

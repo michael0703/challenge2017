@@ -8,7 +8,7 @@ import Controller.Controller as controller
 def main(argv):
     evManager = EventManager.EventManager()
     gamemodel = model.GameEngine(evManager, argv[1:])
-    keyboard = controller.Keyboard(evManager, gamemodel)
+    Control = controller.Control(evManager, gamemodel)
     graphics = view.GraphicalView(evManager, gamemodel)
     gamemodel.run()
 

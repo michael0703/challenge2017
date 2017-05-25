@@ -1,11 +1,13 @@
-import pygame
+import pygame as pg
 
 import Model.Model as model
 from EventManager import *
+from MainConst import *
+from Controller.CtrlConst import *
 
-class Keyboard(object):
+class Control(object):
     """
-    Handles keyboard input.
+    Handles control input.
     """
     def __init__(self, evManager, model):
         """
@@ -22,12 +24,12 @@ class Keyboard(object):
         """
         if isinstance(event, Event_EveryTick):
             # Called for each game tick. We check our keyboard presses here.
-            for event in pygame.event.get():
+            for event in pg.event.get():
                 # handle window manager closing our window
-                if event.type == pygame.QUIT:
+                if event.type == pg.QUIT:
                     self.evManager.Post(Event_Quit())
                 # handle key down events
-                if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
+                if event.type == pg.KEYDOWN and event.key == pg.K_ESCAPE:
                     self.evManager.Post(Event_StateChange(None))
                 else:
                     cur_state = self.model.state.peek()
@@ -35,40 +37,50 @@ class Keyboard(object):
                         self.ctrl_menu(event)
                     if cur_state == model.STATE_PLAY:
                         self.ctrl_play(event)
-                    if cur_state == model.STATE_HELP:
-                        self.ctrl_help(event)
+                    if cur_state == model.STATE_STOP:
+                        self.ctrl_stop(event)
+        elif isinstance(event, Event_Initialize):
+            self.initialize()
 
     def ctrl_menu(self, event):
         """
-        Handles menu key events.
+        Handles menu events.
         """
-        if event.type == pygame.KEYDOWN:
+        if event.type == pg.KEYDOWN:
             # escape pops the menu
-            if event.key == pygame.K_ESCAPE:
+            if event.key == pg.K_ESCAPE:
                 self.evManager.Post(Event_StateChange(None))
             # space plays the game
-            if event.key == pygame.K_SPACE:
+            if event.key == pg.K_SPACE:
                 self.evManager.Post(Event_StateChange(model.STATE_PLAY))
 
-    def ctrl_help(self, event):
+    def ctrl_stop(self, event):
         """
-        Handles help key events.
+        Handles help events.
         """
-        if event.type == pygame.KEYDOWN:
+        if event.type == pg.KEYDOWN:
             # space, enter or escape pops help
-            if event.key in [pygame.K_ESCAPE, pygame.K_SPACE, pygame.K_RETURN]:
+            if event.key in [pg.K_ESCAPE, pg.K_p ]:
                 self.evManager.Post(Event_StateChange(None))
 
     def ctrl_play(self, event):
         """
-        Handles play key events.
+        Handles play events.
         """
-        if event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_ESCAPE:
-                # escape pops the menu
+        if event.type == pg.KEYDOWN:
+            # escape pops the menu
+            if event.key == pg.K_ESCAPE:
                 self.evManager.Post(Event_StateChange(None))
-            # F1 shows the help
-            elif event.key == pygame.K_F1:    
-                self.evManager.Post(Event_StateChange(model.STATE_HELP))
-            else:
-                self.evManager.Post(Event_Input(event.key, None))
+            # key p to stop the game
+            elif event.key == pg.K_p:    
+                self.evManager.Post(Event_StateChange(model.STATE_STOP))
+
+    def initialize(self):
+        """
+        init pygame event and set timer
+        
+        # Document
+        pg.event.Event(event_id)
+        pg.time.set_timer(event_id, TimerDelay)
+        """
+        pass
