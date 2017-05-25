@@ -1,9 +1,9 @@
 import sys
 
 import EventManager
-import Model.Model as model
-import View.View as view
-import Controller.Controller as controller
+import Model.main as model
+import View.main as view
+import Controller.main as controller
 
 def main(argv):
     evManager = EventManager.EventManager()

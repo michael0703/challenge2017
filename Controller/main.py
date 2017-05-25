@@ -1,9 +1,9 @@
 import pygame as pg
 
-import Model.Model as model
+import Model.main as model
 from EventManager import *
 from MainConst import *
-from Controller.CtrlConst import *
+from Controller.const import *
 
 class Control(object):
     """
